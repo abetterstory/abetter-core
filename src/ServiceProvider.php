@@ -2,16 +2,16 @@
 
 namespace ABetter\Core;
 
+use ABetter\Core\SandboxMiddleware;
+
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider {
 
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
     public function boot() {
+
+		$this->app->make(Kernel::class)->pushMiddleware(SandboxMiddleware::class);
 
 		view()->composer('*', function($view){
 			view()->share('view', (object) [
@@ -23,11 +23,6 @@ class ServiceProvider extends BaseServiceProvider {
 
     }
 
-    /**
-     * Register services.
-     *
-     * @return void
-     */
     public function register() {
 		//
     }
