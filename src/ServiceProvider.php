@@ -14,11 +14,15 @@ class ServiceProvider extends BaseServiceProvider {
 		$this->app->make(Kernel::class)->pushMiddleware(SandboxMiddleware::class);
 
 		view()->composer('*', function($view){
-			view()->share('view', (object) [
-				'origin' => __CLASS__,
+			global $view_data; $view_data = $view_data ?? [];
+			if (!preg_match('/__components::/',$view->getName())) $view_data[] = [
+				'provider' => __CLASS__,
 				'name' => $view->getName(),
-				'path' => $view->getPath(),
-			]);
+				'path' => dirname($view->getPath()),
+				'file' => basename($view->getPath()),
+				'data' => $view->getData(),
+			];
+			view()->share('view', $view_data);
 		});
 
     }

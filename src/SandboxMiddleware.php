@@ -9,19 +9,36 @@ class SandboxMiddleware {
 	public function handle($request, Closure $next) {
 
 		if (env('APP_ENV') == 'sandbox' || isset($_GET['clearcache'])) {
-			_deleteFiles(app('path.storage').'/framework/views/',FALSE);
+			$this->deleteFiles(app('path.storage').'/framework/views/',FALSE);
 		}
 
 		if (isset($_GET['clearcache'])) {
-			_deleteFiles(app('path.storage').'/cache/',FALSE);
+			$this->deleteFiles(app('path.storage').'/cache/',FALSE);
 		}
 
+		/*
 		if (!in_array(strtolower(env('APP_ENV')),['production','stage'])) {
 			app()->register('ABetter\Core\PhpConsoleServiceProvider');
 		}
+		*/
 
 		return $next($request);
 
+	}
+
+	// ---
+
+	protected function deleteFiles($path,$rmdir=TRUE) {
+		if (!is_dir($path)) return;
+		$i = new \DirectoryIterator($path);
+        foreach ($i AS $f) {
+			if ($f->isFile() && !preg_match('/^\./',$f->getFilename())) {
+                @unlink($f->getRealPath());
+            } else if (!$f->isDot() && $f->isDir()) {
+                $this->deleteFiles($f->getRealPath());
+            }
+        }
+        if ($rmdir) @rmdir($path);
 	}
 
 }
