@@ -16,12 +16,6 @@ class SandboxMiddleware {
 			$this->deleteFiles(app('path.storage').'/cache/',FALSE);
 		}
 
-		/*
-		if (!in_array(strtolower(env('APP_ENV')),['production','stage'])) {
-			app()->register('ABetter\Core\PhpConsoleServiceProvider');
-		}
-		*/
-
 		return $next($request);
 
 	}
