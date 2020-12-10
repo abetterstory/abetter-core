@@ -9,6 +9,10 @@ class BladeServiceProvider extends ServiceProvider {
 
     public function boot() {
 
+		Blade::directive('abettercore', function(){
+			return "<?php echo 'ABETTER CORE!'; ?>";
+		});
+
 		// Shortcuts
 		Blade::directive('notempty', function($expression){
 			return "<?php if(!empty($expression)): ?>";

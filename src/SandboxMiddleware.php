@@ -8,7 +8,7 @@ class SandboxMiddleware {
 
 	public function handle($request, Closure $next) {
 
-		if (env('APP_ENV') == 'sandbox' || isset($_GET['clearcache'])) {
+		if (env('APP_SANDBOX') || env('APP_ENV') == 'sandbox' || isset($_GET['clearview'])) {
 			$this->deleteFiles(app('path.storage').'/framework/views/',FALSE);
 		}
 
