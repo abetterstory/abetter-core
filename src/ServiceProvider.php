@@ -11,6 +11,7 @@ class ServiceProvider extends BaseServiceProvider {
 
     public function boot() {
 
+		$this->app->make(Kernel::class)->pushMiddleware(Middleware::class);
 		$this->app->make(Kernel::class)->pushMiddleware(SandboxMiddleware::class);
 
 		view()->composer('*', function($view){
