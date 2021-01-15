@@ -97,8 +97,6 @@ class Service {
 		}
 		// ---
 		$this->build();
-		// ---
-		//dump($this);
 	}
 
 
@@ -140,6 +138,18 @@ class Service {
 	public function error($message) {
 		$this->json['status'] = 'error';
 		$this->json['message'] = (string) $message;
+		return $this;
+	}
+
+	public function log($key,$val=NULL) {
+		if (is_string($key) && !empty($val)) {
+			$add = [$key => $val];
+		} else if (is_array($key)) {
+			$add = $key;
+		} else if (is_string($key)) {
+			$add = [$key];
+		}
+		$this->json['log'] = array_merge($this->json['log'],$add);
 		return $this;
 	}
 
