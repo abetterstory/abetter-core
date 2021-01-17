@@ -32,13 +32,17 @@ class Middleware {
 			// Cache
 			if (isset($_HEADERS['expire'])) {
 				$expire = ($error > 400) ? 300 : 2628000; // Default 1 month
+				$modified = time();
 				if ($_HEADERS['expire'] !== '') {
 					$expire = (is_numeric($_HEADERS['expire'])) ? (int) $_HEADERS['expire'] : strtotime($_HEADERS['expire'],0);
+				}
+				if (is_numeric($_HEADERS['modified']??NULL)) {
+					$modified = (int) $_HEADERS['modified'];
 				}
 				if ($expire > 0) {
 					$response->header('Pragma', 'public');
 					$response->header('Cache-Control', 'public, max-age='.$expire);
-					$response->header('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + $expire));
+					$response->header('Expires', gmdate('D, d M Y H:i:s \G\M\T', $modified + $expire));
 					$response->setEtag(md5($response->content()));
 				} else {
 					$response->header('Pragma', 'no-cache');
