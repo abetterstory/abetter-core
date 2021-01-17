@@ -286,7 +286,7 @@ class Service {
 			'xls' => 'application/vnd.ms-excel',
 			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 		];
-		$formats = ($reverse) ? array_reverse($formats) : $formats;
+		$formats = ($reverse) ? array_flip($formats) : $formats;
 		return $formats[$ext] ?? reset($formats);
 	}
 
