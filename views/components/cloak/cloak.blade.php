@@ -5,10 +5,9 @@ $Xcloak->slot = $slot ?? "";
 $Xcloak->class = "";
 $Xcloak->attr = "";
 foreach ($Xcloak->attributes??[] AS $key => $val) {
-	if ($key == "class") {
-		$Xcloak->class .= " {$val}";
-	} else {
-		$Xcloak->attr .= " $key=\"{$val}\"";
+	switch ($key) {
+		case 'class' : $Xcloak->class .= " {$val}"; break;
+		default : $Xcloak->attr .= " $key=\"{$val}\"";
 	}
 }
 
@@ -32,14 +31,29 @@ foreach ($Xcloak->attributes??[] AS $key => $val) {
 	    for (var i = 0; i < $e.length; i++) {
 	        var rect = $e[i].getBoundingClientRect(), cl = $e[i].classList;
 	        if (rect.top < $w.innerHeight && rect.bottom > 0) {
-				cl.add('--enter');
+				if (!cl.contains('--enter')) {
+					$this.xcall($e[i],'onenter');
+				};
 				if ($this.dir < 0) {
 					cl.add('--reverse');
-				}
+				};
+				cl.add('--enter');
+				cl.remove('--leave');
 	        } else {
+				if (cl.contains('--enter')) {
+					$this.xcall($e[i],'onleave');
+				};
+				cl.add('--leave');
 				cl.remove('--enter','--reverse');
 			};
 	    };
+	};
+
+	$this.xcall = function($e,cb) {
+		var func = ($e.getAttribute(cb)||'').replace(/^\"([^\"\(]+).*/,'$1'); if (!func) return;
+		if (func && (eval('typeof('+func+') == typeof(Function)'))) {
+			return window[func]($e);
+		};
 	};
 
 	// ---
