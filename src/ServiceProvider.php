@@ -26,6 +26,12 @@ class ServiceProvider extends BaseServiceProvider {
 			view()->share('view', $view_data);
 		});
 
+		$this->loadViewsFrom(__DIR__.'/../views', 'abetter');
+
+		$this->loadViewComponentsAs('', [
+			CloakComponent::class,
+	    ]);
+
     }
 
     public function register() {

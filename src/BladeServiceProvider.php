@@ -33,6 +33,9 @@ class BladeServiceProvider extends ServiceProvider {
 			return '<?php endif; ?>';
 		});
 
+		// Components
+		Blade::component('cloak', CloakComponent::class);
+
     }
 
     public function register() {
