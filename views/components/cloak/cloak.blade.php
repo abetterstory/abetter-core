@@ -27,32 +27,44 @@ foreach ($Xcloak->attributes??[] AS $key => $val) {
 		$b = $d.documentElement;
 
 	$this.xcloak = function(e) {
-	    var $e = $d.querySelectorAll('[x-cloak]'); // IE breaks with '--';
-	    for (var i = 0; i < $e.length; i++) {
-	        var rect = $e[i].getBoundingClientRect(), cl = $e[i].classList;
+
+	    var $els = $d.querySelectorAll('[x-cloak]'); // IE breaks with '--';
+		[].forEach.call($els,function($el){
+
+	        var rect = $el.getBoundingClientRect();
+			var cl = $el.classList;
+
 	        if (rect.top < $w.innerHeight && rect.bottom > 0) {
+
 				if (!cl.contains('--enter')) {
-					$this.xcall($e[i],'onenter');
+					$this.xcall($el,'onenter');
+					cl.add('--enter');
 				};
+
 				if ($this.dir < 0) {
 					cl.add('--reverse');
 				};
-				cl.add('--enter');
+
 				cl.remove('--leave');
+
 	        } else {
+
 				if (cl.contains('--enter')) {
-					$this.xcall($e[i],'onleave');
+					$this.xcall($el,'onleave');
+					cl.add('--leave');
 				};
-				cl.add('--leave');
+
 				cl.remove('--enter','--reverse');
+
 			};
-	    };
+
+	    });
 	};
 
-	$this.xcall = function($e,cb) {
-		var func = ($e.getAttribute(cb)||'').replace(/^\"([^\"\(]+).*/,'$1'); if (!func) return;
+	$this.xcall = function($el,cb) {
+		var func = ($el.getAttribute(cb)||'').replace(/^\"([^\"\(]+).*/,'$1'); if (!func) return;
 		if (func && (eval('typeof('+func+') == typeof(Function)'))) {
-			return window[func]($e);
+			return window[func]($el);
 		};
 	};
 
