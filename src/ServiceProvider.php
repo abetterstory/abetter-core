@@ -29,7 +29,7 @@ class ServiceProvider extends BaseServiceProvider {
 		$this->loadViewsFrom(__DIR__.'/../views', 'abetter');
 
 		$this->loadViewComponentsAs('', [
-			CloakComponent::class,
+			ContainerComponent::class,
 	    ]);
 
     }

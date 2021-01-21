@@ -4,9 +4,9 @@ namespace ABetter\Core;
 
 use Illuminate\View\Component;
 
-class CloakComponent extends Component {
+class ContainerComponent extends Component {
 
-	public $view = 'abetter::components.cloak.cloak';
+	public $view = 'abetter::components.container.container';
 
 	// ---
 

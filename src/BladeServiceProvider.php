@@ -34,7 +34,7 @@ class BladeServiceProvider extends ServiceProvider {
 		});
 
 		// Components
-		Blade::component('cloak', CloakComponent::class);
+		Blade::component('container', ContainerComponent::class);
 
     }
 
