@@ -7,8 +7,9 @@ $Xcontainer->attr = "";
 foreach ($Xcontainer->attributes??[] AS $key => $val) {
 	if ($key == 'class') {
 		$Xcontainer->class .= " {$val}";
-	} else if (in_array($key,['pointer','progress'])) {
+	} else if (in_array($key,['pointer','progress','grow'])) {
 		$Xcontainer->attr .= " {$key}";
+		$Xcontainer->class .= " --{$key}";
 	} else if ($val) {
 		$Xcontainer->attr .= " $key=\"{$val}\"";
 	}
@@ -170,15 +171,19 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 
 <x-style>
 .component--x-container {
-	//display: block;
-	//position: relative;
-	width: 100%;
-	height: 100%;
+	display: block;
+	position: relative;
 	.\--x-contained {
-		//display: block;
-		//position: relative;
+		display: block;
+		position: relative;
+	}
+	&.\--grow {
 		width: 100%;
 		height: 100%;
+		.\--x-contained {
+			width: 100%;
+			height: 100%;
+		}
 	}
 }
 </x-style>
