@@ -21,71 +21,102 @@ foreach ($Xcloak->attributes??[] AS $key => $val) {
 <x-script>
 (function(){
 
-	var $this = this,
+	var self = this,
 		$w = window,
 		$d = document,
 		$b = $d.documentElement;
 
-	$this.xcloak = function(e) {
+	self.xCloak = function(e) {
 
-	    var $els = $d.querySelectorAll('[x-cloak]'); // IE breaks with '--';
-		[].forEach.call($els,function($el){
+	    var els = $d.querySelectorAll('[x-cloak]'); // IE breaks with '--';
+		[].forEach.call(els,function(el){
 
-	        var rect = $el.getBoundingClientRect();
-			var cl = $el.classList;
+	        var rect = el.getBoundingClientRect(),
+				cl = el.classList,
+				cs = el.style,
+				sp;
+
+			cs.setProperty('--w', Math.round(rect.width));
+			cs.setProperty('--h', Math.round(rect.height));
+
+			sp = Math.round(((rect.height + $w.innerHeight) - rect.bottom) / (rect.height + $w.innerHeight) * 100) / 100;
+			if (sp > 1) { sp = 1; } else if (sp < 0) { sp = 0; };
+
+			cs.setProperty('--progress', sp);
+			cs.setProperty('--dir', self.dir);
+
+			// ---
 
 	        if (rect.top < $w.innerHeight && rect.bottom > 0) {
 
-				if (!cl.contains('--enter')) {
-					$this.xcall($el,'onenter');
-					cl.add('--enter');
-				};
-
-				if ($this.dir < 0) {
+				if (self.dir < 0) {
 					cl.add('--reverse');
 				};
 
+				if (!cl.contains('--enter')) {
+					self.xCall(el,'onenter');
+					cl.add('--enter');
+				};
 				cl.remove('--leave');
 
 	        } else {
 
 				if (cl.contains('--enter')) {
-					$this.xcall($el,'onleave');
+					self.xCall(el,'onleave');
 					cl.add('--leave');
 				};
+				cl.remove('--enter','--reverse','--focus','--blur');
 
-				cl.remove('--enter','--reverse');
+			};
+
+			// ---
+
+			if (rect.top < ($w.innerHeight * 0.75) && (rect.bottom) > ($w.innerHeight * 0.25)) {
+
+				if (!cl.contains('--focus')) {
+					self.xCall(el,'onfocus');
+					cl.add('--focus');
+				};
+				cl.remove('--blur');
+
+			} else {
+
+				if (cl.contains('--focus')) {
+					self.xCall(el,'onblur');
+					cl.add('--blur');
+				};
+				cl.remove('--focus');
 
 			};
 
 	    });
 	};
 
-	$this.xcall = function($el,cb) {
-		var func = ($el.getAttribute(cb)||'').replace(/^\"([^\"\(]+).*/,'$1'); if (!func) return;
+	self.xCall = function(el,cb) {
+		var func = (el.getAttribute(cb)||'').replace(/^\"([^\"\(]+).*/,'$1'); if (!func) return;
 		if (func && (eval('typeof('+func+') == typeof(Function)'))) {
-			return window[func]($el);
+			return $w[func](el,cb);
 		};
 	};
 
 	// ---
 
-	$this.dir = 0;
-	$this.s = 0;
-	$this.xscrd = function() {
-		$this.dir  = 0;
-		if ($this.s > $b.scrollTop) {
-			$this.dir = -1;
-		} else if ($this.s < $b.scrollTop) {
-			$this.dir = 1;
+	self.dir = 0;
+	self.s = 0;
+	self.xDir = function() {
+		self.dir  = 0;
+		if (self.s > $b.scrollTop) {
+			self.dir = -1;
+		} else if (self.s < $b.scrollTop) {
+			self.dir = 1;
 		}
-		$this.s = $b.scrollTop;
+		self.s = $b.scrollTop;
 	};
 
-	$w.addEventListener('scroll', $this.xscrd);
-	$w.addEventListener('scroll', $this.xcloak);
-	$w.addEventListener('load', $this.xcloak);
-	$w.addEventListener('resize', $this.xcloak);
+	$w.addEventListener('scroll', self.xDir);
+	$w.addEventListener('scroll', self.xCloak);
+	$w.addEventListener('load', self.xCloak);
+	$w.addEventListener('resize', self.xCloak);
 
 })();
 </x-script>
