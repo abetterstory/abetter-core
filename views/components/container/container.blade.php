@@ -7,7 +7,7 @@ $Xcontainer->attr = "";
 foreach ($Xcontainer->attributes??[] AS $key => $val) {
 	if ($key == 'class') {
 		$Xcontainer->class .= " {$val}";
-	} else if (in_array($key,['pointer','progress','grow'])) {
+	} else if (in_array($key,['pointer','progress','grow','cover'])) {
 		$Xcontainer->attr .= " {$key}";
 		$Xcontainer->class .= " --{$key}";
 	} else if ($val) {
@@ -46,8 +46,8 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 				con,
 				sp;
 
-			cs.setProperty('--w', Math.round(rw) );
-			cs.setProperty('--h', Math.round(rh) );
+			cs.setProperty('--w', Math.round(rw) + 'px' );
+			cs.setProperty('--h', Math.round(rh) + 'px' );
 
 			cs.setProperty('--vw', ((rw / ww) * 100).toFixed(2) + '%' );
 			cs.setProperty('--vh', ((rh / wh) * 100).toFixed(2) + '%' );
@@ -170,17 +170,17 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 </x-script>
 
 <x-style>
-.component--x-container {
+[x-container] {
 	display: block;
 	position: relative;
-	.\--x-contained {
+	[x-contained] {
 		display: block;
 		position: relative;
 	}
-	&.\--grow {
+	&.\--grow,.\--cover {
 		width: 100%;
 		height: 100%;
-		.\--x-contained {
+		[x-contained] {
 			width: 100%;
 			height: 100%;
 		}
