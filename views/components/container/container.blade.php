@@ -177,7 +177,8 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 		display: block;
 		position: relative;
 	}
-	&.\--grow,.\--cover {
+	&.\--grow,
+	&.\--cover {
 		width: 100%;
 		height: 100%;
 		[x-contained] {
