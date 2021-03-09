@@ -38,12 +38,14 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 	        var rect = el.getBoundingClientRect(),
 				cs = el.style,
 				cl = el.classList,
+				rt = rect.top,
 				rb = rect.bottom,
 				rw = rect.width,
 				rh = rect.height,
 				ww = $w.innerWidth,
 				wh = $w.innerHeight,
 				con,
+				ss,
 				sp;
 
 			cs.setProperty('--w', Math.round(rw) + 'px' );
@@ -54,7 +56,7 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 
 			// ---
 
-	        if (rect.top < $w.innerHeight && rect.bottom > 0) {
+	        if (rt < wh && rb > 0) {
 
 				if (self.dir < 0) {
 					cl.add('--reverse');
@@ -78,7 +80,7 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 
 			// ---
 
-			if (rect.top < ($w.innerHeight * 0.75) && (rect.bottom) > ($w.innerHeight * 0.25)) {
+			if (rt < (wh * 0.75) && (rb) > (wh * 0.25)) {
 
 				if (!cl.contains('--focus')) {
 					self.xCall(el,'onfocus');
@@ -104,7 +106,30 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 				if (sp > 1) { sp = 1; } else if (sp < 0) { sp = 0; };
 
 				cs.setProperty('--progress', sp);
+
+			};
+
+			if (el.hasAttribute('scroll')) {
+
+				ss = Math.round(((0 - rt) / (rh || 1)) * 100) / 100;
+				if (ss < 0) { ss = 0; } else if (ss > 1) { ss = 1; };
+
+				cs.setProperty('--scroll', ss);
 				cs.setProperty('--dir', self.dir);
+
+				if (ss > 0) {
+					if (self.is == 0) {
+						self.xCall(el,'onscroll');
+						cl.add('--scroll');
+					}
+					self.is = 1;
+				} else if (ss === 0) {
+					if (self.is == 1) {
+						self.xCall(el,'onscrolltop');
+						cl.remove('--scroll');
+					}
+					self.is = 0;
+				};
 
 			};
 
@@ -149,6 +174,7 @@ foreach ($Xcontainer->attributes??[] AS $key => $val) {
 		};
 	};
 
+	self.is = 0;
 	self.dir = 0;
 	self.s = 0;
 	self.xDir = function() {
