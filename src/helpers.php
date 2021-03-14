@@ -69,3 +69,54 @@ if (!function_exists('_is_prod')) {
 		return _is_production();
 	}
 }
+
+// ---
+
+if (!function_exists('_cache_headers')) {
+	function _cache_headers($options) {
+		$headers = [
+			'X-ABetter' => 'core',
+		];
+		// ---
+		if (($format = $options['format'] ?? '')) {
+			$headers['Content-Type'] = $format;
+		}
+		// ---
+		if (($error = $options['error'] ?? 0) && $error > 400) {
+			$headers['Status Code'] = $error;
+		}
+		// ---
+		if (isset($options['expire'])) {
+			$expire = ($error > 400) ? 300 : 2628000; // Default 1 month
+			$modified = time();
+			if ($options['expire'] !== '') {
+				$expire = (is_numeric($options['expire'])) ? (int) $options['expire'] : strtotime($options['expire'],0);
+			}
+			if (is_numeric($options['modified']??NULL)) {
+				$modified = (int) $options['modified'];
+			}
+			if ($expire > 0) {
+				$headers['Pragma'] = 'public';
+				$headers['Cache-Control'] = 'public, max-age='.$expire;
+				$headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', $modified + $expire);
+				$options['etag'] = $options['etag'] ?? 'W/"'.$modified.'"';
+			} else {
+				$headers['Pragma'] = 'no-cache';
+				$headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0';
+				$headers['Expires'] = '0';
+			}
+		}
+		// ---
+		if (($etag = $options['etag'] ?? '')) {
+			$headers['ETag'] = $etag;
+		}
+		// ---
+		if (($format = $options['cors'] ?? '')) {
+			$headers['Access-Control-Allow-Origin'] = '*';
+			$headers['Access-Control-Allow-Headers'] = 'origin, x-requested-with, content-type';
+			$headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS';
+		}
+		// ---
+		return $headers;
+	}
+}
