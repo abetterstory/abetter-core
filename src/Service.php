@@ -124,18 +124,30 @@ class Service {
 		return $this;
 	}
 
-	public function message($message) {
+	public function message($message="") {
 		$this->json['message'] = (string) $message;
 		return $this;
 	}
 
-	public function pass($message) {
+	public function pass($message="") {
 		$this->json['status'] = 'pass';
 		$this->json['message'] = (string) $message;
 		return $this;
 	}
 
-	public function error($message) {
+	public function success($message="") {
+		$this->json['status'] = 'success';
+		$this->json['message'] = (string) $message;
+		return $this;
+	}
+
+	public function fail($message="") {
+		$this->json['status'] = 'fail';
+		$this->json['message'] = (string) $message;
+		return $this;
+	}
+
+	public function error($message="") {
 		$this->json['status'] = 'error';
 		$this->json['message'] = (string) $message;
 		return $this;
