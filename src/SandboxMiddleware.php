@@ -10,6 +10,7 @@ class SandboxMiddleware {
 
 		if (env('APP_SANDBOX') || env('APP_ENV') == 'sandbox' || isset($_GET['clearview'])) {
 			$this->deleteFiles(app('path.storage').'/framework/views/',FALSE);
+			$this->deleteFiles(app('path.bootstrap').'/cache/',FALSE);
 		}
 
 		if (isset($_GET['clearcache'])) {
